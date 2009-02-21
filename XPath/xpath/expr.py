@@ -795,8 +795,10 @@ class PredicateList(Expr):
         return result
 
     def __str__(self):
-        return '%s%s' % (self.expr,
-                         ''.join(('[%s]' % x for x in self.predicates)))
+        s = str(self.expr)
+        if '/' in s:
+            s = '(%s)' % s
+        return s + ''.join(('[%s]' % x for x in self.predicates))
 
 class AxisStep(Expr):
     """One step in a location path expression."""
@@ -875,7 +877,7 @@ class PITest(object):
     def __str__(self):
         if self.name is None:
             name = ''
-        if "'" in self.name:
+        elif "'" in self.name:
             name = '"%s"' % self.name
         else:
             name = "'%s'" % self.name
