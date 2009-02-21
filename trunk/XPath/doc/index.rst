@@ -1,26 +1,16 @@
 :mod:`xpath` --- XPath Queries For DOM Trees
 ============================================
-
-.. toctree::
-   :maxdepth: 2
-
 The :mod:`xpath` module is a pure Python implementation of the XPath query
 language, operating on DOM documents.  It supports most of XPath 1.0, with
 the following exceptions:
 
 * The namespace axis is not supported.
 * The ``round()`` function rounds toward 0, not towards positive infinity.
-* The result of rounding negative zero is zero, not negative zero.
 
 The following XPath 2.0 features are supported:
 
 * A default namespace may be supplied in the expression context.
 * Node tests may have a wildcard namespace. (e.g., ``*:name``.)
-
-.. seealso::
-
-   `XML Path Language (XPath) Version 1.0 <http://www.w3.org/TR/xpath>`_
-      The W3C recommendation upon which this module is based.
 
 This module provides the following functions for evaluating XPath expressions:
 
@@ -85,23 +75,23 @@ The examples in this section use this XML document: ::
      <item name="parrot" />
    </doc>
 
-Select the `item` element in a document: ::
+Select the ``item`` element in a document: ::
 
    >>> xpath.find('//item', doc)
    [<DOM Element: item at 0x474468>, <DOM Element: item at 0x27d7d8>]
 
-Select the `name` attribute of the first item element (note that this returns
+Select the ``name`` attribute of the first item element (note that this returns
 a list of Attr nodes): ::
 
    >>> xpath.find('//item[1]/@name', doc)
    [<xml.dom.minidom.Attr instance at 0x474300>]
 
-Select the string-value of the `name` attribute of the last item element: ::
+Select the string-value of the ``name`` attribute of the last item element: ::
 
    >>> xpath.findvalue('//item[last()]/@name', doc)
    u'parrot'
 
-Select the first item element with a `name` attribute that starts with "p": ::
+Select the first item element with a ``name`` attribute that starts with "p": ::
 
    >>> xpath.findnode('//item[starts-with(@name,"p")]', doc)
    <DOM Element: item at 0x474468>
@@ -120,8 +110,8 @@ The *namespaces* argument to the evaluation functions provides a dictionary
 of prefixes to namespace URIs.  Prefixed QNames in expressions will be
 expanded according to this mapping.
 
-To select the string-values of the `item` elements in the
-"http://circus.example.org/" namespace: ::
+To select the string-values of the ``item`` elements in the
+"\http://circus.example.org/" namespace: ::
 
    >>> xpath.findvalues('//prefix:item', doc,
    ...                  namespaces={'prefix':'http://circus.example.org/'})
@@ -131,8 +121,8 @@ The *default_namespace* argument provides a namespace URI that will be
 used for any unprefixed QName appearing in a position where an element
 name is expected.  (Default namespaces are a feature of XPath 2.0.)
 
-To select the string-values of the `item` elements in the
-"http://flying.example.org/" namespace: ::
+To select the string-values of the ``item`` elements in the
+"\http://flying.example.org/" namespace: ::
 
    >>> xpath.findvalues('//item', doc,
    ...                  default_namespace='http://flying.example.org/')
@@ -143,7 +133,7 @@ is that of the document element.  When a *namespaces* argument is not
 provided, the prefix declarations consist of all prefixes defined on the
 document element.
 
-To select the string values of all the `item` elements: ::
+To select the string values of all the ``item`` elements: ::
 
    >>> xpath.findvalues('//item | //circus:item', doc)
    [u'python', u'parrot']
@@ -154,7 +144,7 @@ name; XPath 2.0 adds support for wildcard matches against the prefix.)
 
 To select all children of the document element, regardless of namespace: ::
 
-   >>> xpath.find('/*.*/*:*', doc)
+   >>> xpath.find('/*:*/*:*', doc)
    [<DOM Element: item at 0x474d00>, <DOM Element: circus:item at 0x4743a0>]
 
 Variables
@@ -179,7 +169,7 @@ function with the *variables* keyword argument: ::
    u'python'
 
 To define a variable within a specific namespace, use a tuple of
-`(namespace-URI, local-name)` as the key in the variable dictionary: ::
+``(namespace-URI, local-name)`` as the key in the variable dictionary: ::
 
    >>> variables = { ('http://python.example.org/', 'id') : 1 }
    >>> namespaces = { 'python' : 'http://python.example.org/' }
@@ -189,7 +179,6 @@ To define a variable within a specific namespace, use a tuple of
 
 Compiled Expression Objects
 ---------------------------
-
 .. class:: XPath(expr)
 
    An expression object which contains a compiled form of the XPath
@@ -201,18 +190,20 @@ Compiled Expression Objects
    .. method:: find(node, [\**kwargs])
                findnode(node, [\**kwargs])
                findvalue(node, [\**kwargs])
+               findvalues(node, [\**kwargs])
 
-      These methods are identical to the :func:`find`, :func:`findnode`, and
-      :func:`findvalue` functions.
+      These methods are identical to the functions of the same name.
 
-   .. method:: __repr__
-               __str__
+Create and use a compiled expression: ::
 
-      Return a representation of the expression.
+   >>> expr = xpath.XPath('//text()')
+   >>> print expr
+   /descendant-or-self::node()/child::text()
+   >>> expr.find()
+   [<DOM Text node "Monty">]
 
 Expression Context Objects
 --------------------------
-
 .. class:: XPathContext([document,] [\**kwargs])
 
    The static context of an XPath expression.  Context objects may be
@@ -247,9 +238,16 @@ Expression Context Objects
       Evaluate *expr* in the context with *node* as the context node.
       *expr* may be either a string or a :class:`XPath` object.
 
+Create and use an evaluation context: ::
+
+   >>> context = xpath.XPathContext()
+   >>> context.namespaces['py'] = 'http://python.example.org/'
+   >>> context.variables['min'] = 4
+   >>> context.findvalues('//item[@id>=$min and @id<=$max]', doc, max=6)
+   [u'4', u'5', u'6']
+
 Exceptions
 ----------
-
 This module defines the following exceptions:
 
 .. exception:: XPathError
@@ -287,9 +285,12 @@ This module defines the following exceptions:
    Raised when an XPath expression contains a variable that has no
    binding in the expression context.
 
-Indices and tables
-==================
+References
+----------
+.. seealso::
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   `XML Path Language (XPath) Version 1.0 <http://www.w3.org/TR/xpath>`_
+      The W3C recommendation upon which this module is based.
+
+   `XML Path Language (XPath) 2.0 <http://www.w3.org/TR/xpath20/>`_
+      Second version of XPath, mostly unsupported by this module.
