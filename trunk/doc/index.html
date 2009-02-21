@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>xpath &#8212; XPath Queries For DOM Trees &mdash; XPath v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="XPath v0.1 documentation" href="" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="">XPath v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  
+  <div class="section" id="xpath-xpath-queries-for-dom-trees">
+<h1><tt class="xref docutils literal"><span class="pre">xpath</span></tt> &#8212; XPath Queries For DOM Trees<a class="headerlink" href="#xpath-xpath-queries-for-dom-trees" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="xref docutils literal"><span class="pre">xpath</span></tt> module is a pure Python implementation of the XPath query
+language, operating on DOM documents.  It supports most of XPath 1.0, with
+the following exceptions:</p>
+<ul class="simple">
+<li>The namespace axis is not supported.</li>
+<li>The <tt class="docutils literal"><span class="pre">round()</span></tt> function rounds toward 0, not towards positive infinity.</li>
+</ul>
+<p>The following XPath 2.0 features are supported:</p>
+<ul class="simple">
+<li>A default namespace may be supplied in the expression context.</li>
+<li>Node tests may have a wildcard namespace. (e.g., <tt class="docutils literal"><span class="pre">*:name</span></tt>.)</li>
+</ul>
+<p>This module provides the following functions for evaluating XPath expressions:</p>
+<dl class="function">
+<dt id="find">
+<!--[find]--><tt class="descname">find</tt><big>(</big><em>expr</em>, <em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the XPath expression <em>expr</em> with <em>node</em> as the context node,
+and return:</p>
+<ul class="simple">
+<li><tt class="xref docutils literal"><span class="pre">True</span></tt> or <tt class="xref docutils literal"><span class="pre">False</span></tt>, when the expression has a boolean result.</li>
+<li>A <tt class="xref docutils literal"><span class="pre">float</span></tt>, when the expression has an numeric result.</li>
+<li>A <tt class="xref docutils literal"><span class="pre">unicode</span></tt>, when the expression has a string result.</li>
+<li>A list of <tt class="xref docutils literal"><span class="pre">xml.dom.Node</span></tt>, when the expression has a
+node-set result.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="findnode">
+<!--[findnode]--><tt class="descname">findnode</tt><big>(</big><em>expr</em>, <em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#findnode" title="Permalink to this definition">¶</a></dt>
+<dd>Evaluate the XPath expression <em>expr</em> with <em>node</em> as the context node,
+and return a single node.  If the result of the expression is a non-empty
+node-set, return the first node in the set.  If the result is an empty
+node-set, return <tt class="xref docutils literal"><span class="pre">None</span></tt>.  If the result is not a node-set, raise
+<a title="XPathTypeError" class="reference internal" href="#XPathTypeError"><tt class="xref docutils literal"><span class="pre">XPathTypeError</span></tt></a>.</dd></dl>
+
+<dl class="function">
+<dt id="findvalue">
+<!--[findvalue]--><tt class="descname">findvalue</tt><big>(</big><em>expr</em>, <em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#findvalue" title="Permalink to this definition">¶</a></dt>
+<dd>Evaluate the XPath expression <em>expr</em> with <em>node</em> as the context node,
+and return the string-value of the result.  If the result is an empty
+node-set, return <tt class="xref docutils literal"><span class="pre">None</span></tt> instead.</dd></dl>
+
+<dl class="function">
+<dt id="findvalues">
+<!--[findvalues]--><tt class="descname">findvalues</tt><big>(</big><em>expr</em>, <em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#findvalues" title="Permalink to this definition">¶</a></dt>
+<dd>Evaluate the XPath expression <em>expr</em> with <em>node</em> as the context node,
+and return a list of the string-values of the resulting node-set.  If
+the result is not a node-set, raise <a title="XPathTypeError" class="reference internal" href="#XPathTypeError"><tt class="xref docutils literal"><span class="pre">XPathTypeError</span></tt></a>.</dd></dl>
+
+<p>The above functions take take the following optional keyword arguments
+defining the evaluation context:</p>
+<dl class="docutils">
+<dt><em>context</em></dt>
+<dd>A <a title="XPathContext" class="reference internal" href="#XPathContext"><tt class="xref docutils literal"><span class="pre">XPathContext</span></tt></a> object containing the evaluation context.  It
+is legal to supply both a context object and additional arguments
+extending its contents.</dd>
+<dt><em>default_namespace</em></dt>
+<dd>The default namespace URI, which will be used for any unqualified name
+in the XPath expression.</dd>
+<dt><em>namespaces</em></dt>
+<dd>A mapping of prefixes to namespace URIs.</dd>
+<dt><em>variables</em></dt>
+<dd>A mapping of variable names to values.  To map a variable in a specific
+namespace, use a two element tuple of the (namespace URI, name) as the key.</dd>
+</dl>
+<p>Additional keyword arguments will be used as variable bindings.</p>
+<div class="section" id="basic-queries">
+<h2>Basic Queries<a class="headerlink" href="#basic-queries" title="Permalink to this headline">¶</a></h2>
+<p>The examples in this section use this XML document:</p>
+<div class="highlight-python"><pre>&lt;doc&gt;
+  &lt;item name="python" /&gt;
+  &lt;item name="parrot" /&gt;
+&lt;/doc&gt;</pre>
+</div>
+<p>Select the <tt class="docutils literal"><span class="pre">item</span></tt> element in a document:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//item&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<span class="go">[&lt;DOM Element: item at 0x474468&gt;, &lt;DOM Element: item at 0x27d7d8&gt;]</span>
+</pre></div>
+</div>
+<p>Select the <tt class="docutils literal"><span class="pre">name</span></tt> attribute of the first item element (note that this returns
+a list of Attr nodes):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;//item[1]/@name&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<span class="go">[&lt;xml.dom.minidom.Attr instance at 0x474300&gt;]</span>
+</pre></div>
+</div>
+<p>Select the string-value of the <tt class="docutils literal"><span class="pre">name</span></tt> attribute of the last item element:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">findvalue</span><span class="p">(</span><span class="s">&#39;//item[last()]/@name&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<span class="go">u&#39;parrot&#39;</span>
+</pre></div>
+</div>
+<p>Select the first item element with a <tt class="docutils literal"><span class="pre">name</span></tt> attribute that starts with &#8220;p&#8221;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">findnode</span><span class="p">(</span><span class="s">&#39;//item[starts-with(@name,&quot;p&quot;)]&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<span class="go">&lt;DOM Element: item at 0x474468&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="namespaces">
+<h2>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline">¶</a></h2>
+<p>The examples in this section use this XML document:</p>
+<div class="highlight-python"><pre>&lt;doc xmlns="http://flying.example.org/"
+     xmlns:circus="http://circus.example.org/"&gt;
+  &lt;item&gt;python&lt;/item&gt;
+  &lt;circus:item&gt;parrot&lt;/circus:item&gt;
+&lt;/doc&gt;</pre>
+</div>
+<p>The <em>namespaces</em> argument to the evaluation functions provides a dictionary
+of prefixes to namespace URIs.  Prefixed QNames in expressions will be
+expanded according to this mapping.</p>
+<p>To select the string-values of the <tt class="docutils literal"><span class="pre">item</span></tt> elements in the
+&#8220;http://circus.example.org/&#8221; namespace:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">findvalues</span><span class="p">(</span><span class="s">&#39;//prefix:item&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span>
+<span class="gp">... </span>                 <span class="n">namespaces</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;prefix&#39;</span><span class="p">:</span><span class="s">&#39;http://circus.example.org/&#39;</span><span class="p">})</span>
+<span class="go">[u&#39;parrot&#39;]</span>
+</pre></div>
+</div>
+<p>The <em>default_namespace</em> argument provides a namespace URI that will be
+used for any unprefixed QName appearing in a position where an element
+name is expected.  (Default namespaces are a feature of XPath 2.0.)</p>
+<p>To select the string-values of the <tt class="docutils literal"><span class="pre">item</span></tt> elements in the
+&#8220;http://flying.example.org/&#8221; namespace:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">findvalues</span><span class="p">(</span><span class="s">&#39;//item&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span>
+<span class="gp">... </span>                 <span class="n">default_namespace</span><span class="o">=</span><span class="s">&#39;http://flying.example.org/&#39;</span><span class="p">)</span>
+<span class="go">[u&#39;python&#39;]</span>
+</pre></div>
+</div>
+<p>When a <em>default_namespaces</em> argument is not provided, the default namespace
+is that of the document element.  When a <em>namespaces</em> argument is not
+provided, the prefix declarations consist of all prefixes defined on the
+document element.</p>
+<p>To select the string values of all the <tt class="docutils literal"><span class="pre">item</span></tt> elements:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">findvalues</span><span class="p">(</span><span class="s">&#39;//item | //circus:item&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<span class="go">[u&#39;python&#39;, u&#39;parrot&#39;]</span>
+</pre></div>
+</div>
+<p>The <tt class="xref docutils literal"><span class="pre">xpath</span></tt> module supports wildcard matches against both the prefix
+and local name.  (XPath 1.0 only support wildcard matches against the local
+name; XPath 2.0 adds support for wildcard matches against the prefix.)</p>
+<p>To select all children of the document element, regardless of namespace:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;/*:*/*:*&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<span class="go">[&lt;DOM Element: item at 0x474d00&gt;, &lt;DOM Element: circus:item at 0x4743a0&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<p>The examples in this section use this XML document:</p>
+<div class="highlight-python"><pre>&lt;doc&gt;
+  &lt;item id="1"&gt;python&lt;/item&gt;
+  &lt;item id="2"&gt;parrot&lt;/item&gt;
+&lt;/doc&gt;</pre>
+</div>
+<p>XPath variables may be passed to the evaluation functions as keyword
+arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">findvalue</span><span class="p">(</span><span class="s">&#39;//item[@id = $id]&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="mf">2</span><span class="p">)</span>
+<span class="go">u&#39;parrot&#39;</span>
+</pre></div>
+</div>
+<p>It is also possible to pass a dictionary of variables to an evaluation
+function with the <em>variables</em> keyword argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">findvalue</span><span class="p">(</span><span class="s">&#39;//item[@id = $id]&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span><span class="mf">1</span><span class="p">})</span>
+<span class="go">u&#39;python&#39;</span>
+</pre></div>
+</div>
+<p>To define a variable within a specific namespace, use a tuple of
+<tt class="docutils literal"><span class="pre">(namespace-URI,</span> <span class="pre">local-name)</span></tt> as the key in the variable dictionary:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">variables</span> <span class="o">=</span> <span class="p">{</span> <span class="p">(</span><span class="s">&#39;http://python.example.org/&#39;</span><span class="p">,</span> <span class="s">&#39;id&#39;</span><span class="p">)</span> <span class="p">:</span> <span class="mf">1</span> <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">namespaces</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;python&#39;</span> <span class="p">:</span> <span class="s">&#39;http://python.example.org/&#39;</span> <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xpath</span><span class="o">.</span><span class="n">findvalue</span><span class="p">(</span><span class="s">&#39;//item[@id = $python:id]&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span> <span class="n">namespaces</span><span class="o">=</span><span class="n">namespaces</span><span class="p">)</span>
+<span class="go">u&#39;python&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compiled-expression-objects">
+<h2>Compiled Expression Objects<a class="headerlink" href="#compiled-expression-objects" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="XPath">
+<!--[XPath]-->class <tt class="descname">XPath</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#XPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>An expression object which contains a compiled form of the XPath
+expression <em>expr</em>.</p>
+<p>Under most circumstances, it is not necessary to directly use this class,
+since the <a title="find" class="reference internal" href="#find"><tt class="xref docutils literal"><span class="pre">find()</span></tt></a> et al. functions cache compiled expressions.</p>
+<dl class="method">
+<dt id="XPath.find">
+<!--[XPath.find]--><tt class="descname">find</tt><big>(</big><em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XPath.find" title="Permalink to this definition">¶</a></dt>
+<dt id="XPath.findnode">
+<tt class="descname">findnode</tt><big>(</big><em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XPath.findnode" title="Permalink to this definition">¶</a></dt>
+<dt id="XPath.findvalue">
+<tt class="descname">findvalue</tt><big>(</big><em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XPath.findvalue" title="Permalink to this definition">¶</a></dt>
+<dt id="XPath.findvalues">
+<tt class="descname">findvalues</tt><big>(</big><em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XPath.findvalues" title="Permalink to this definition">¶</a></dt>
+<dd>These methods are identical to the functions of the same name.</dd></dl>
+
+</dd></dl>
+
+<p>Create and use a compiled expression:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">expr</span> <span class="o">=</span> <span class="n">xpath</span><span class="o">.</span><span class="n">XPath</span><span class="p">(</span><span class="s">&#39;//text()&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">expr</span>
+<span class="go">/descendant-or-self::node()/child::text()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expr</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+<span class="go">[&lt;DOM Text node &quot;Monty&quot;&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="expression-context-objects">
+<h2>Expression Context Objects<a class="headerlink" href="#expression-context-objects" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="XPathContext">
+<!--[XPathContext]-->class <tt class="descname">XPathContext</tt><big>(</big><span class="optional">[</span><em>document</em><span class="optional">]</span><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XPathContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>The static context of an XPath expression.  Context objects may be
+created with the same keyword arguments accepted by the expression
+evaluation functions.</p>
+<p>The <em>document</em> argument may contain a DOM node.  If provided, the
+default namespace and namespace declarations will be initialized from
+the document element of this node.</p>
+<p>The context contains the following attributes and methods:</p>
+<dl class="attribute">
+<dt id="XPathContext.default_namespace">
+<!--[XPathContext.default_namespace]--><tt class="descname">default_namespace</tt><a class="headerlink" href="#XPathContext.default_namespace" title="Permalink to this definition">¶</a></dt>
+<dd>The default namespace URI.</dd></dl>
+
+<dl class="attribute">
+<dt id="XPathContext.namespaces">
+<!--[XPathContext.namespaces]--><tt class="descname">namespaces</tt><a class="headerlink" href="#XPathContext.namespaces" title="Permalink to this definition">¶</a></dt>
+<dd>The mapping of prefixes to namespace URIs.</dd></dl>
+
+<dl class="attribute">
+<dt id="XPathContext.variables">
+<!--[XPathContext.variables]--><tt class="descname">variables</tt><a class="headerlink" href="#XPathContext.variables" title="Permalink to this definition">¶</a></dt>
+<dd>The mapping of variables to values.  The keys of this map may
+be either strings for variables with no namespace, or
+(namespaceURI, name) tuples for variables contained in a
+namespace.</dd></dl>
+
+<dl class="method">
+<dt id="XPathContext.find">
+<!--[XPathContext.find]--><tt class="descname">find</tt><big>(</big><em>expr</em>, <em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XPathContext.find" title="Permalink to this definition">¶</a></dt>
+<dt id="XPathContext.findnode">
+<tt class="descname">findnode</tt><big>(</big><em>expr</em>, <em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XPathContext.findnode" title="Permalink to this definition">¶</a></dt>
+<dt id="XPathContext.findvalue">
+<tt class="descname">findvalue</tt><big>(</big><em>expr</em>, <em>node</em><span class="optional">[</span>, <em>**kwargs</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#XPathContext.findvalue" title="Permalink to this definition">¶</a></dt>
+<dd>Evaluate <em>expr</em> in the context with <em>node</em> as the context node.
+<em>expr</em> may be either a string or a <a title="XPath" class="reference internal" href="#XPath"><tt class="xref docutils literal"><span class="pre">XPath</span></tt></a> object.</dd></dl>
+
+</dd></dl>
+
+<p>Create and use an evaluation context:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">context</span> <span class="o">=</span> <span class="n">xpath</span><span class="o">.</span><span class="n">XPathContext</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">namespaces</span><span class="p">[</span><span class="s">&#39;py&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;http://python.example.org/&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">findvalues</span><span class="p">(</span><span class="s">&#39;//item[@id&gt;=$min and @id&lt;=$max]&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">6</span><span class="p">)</span>
+<span class="go">[u&#39;4&#39;, u&#39;5&#39;, u&#39;6&#39;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the following exceptions:</p>
+<dl class="exception">
+<dt id="XPathError">
+<!--[XPathError]-->exception <tt class="descname">XPathError</tt><a class="headerlink" href="#XPathError" title="Permalink to this definition">¶</a></dt>
+<dd>Base exception class used for all XPath exceptions.</dd></dl>
+
+<dl class="exception">
+<dt id="XPathNotImplementedError">
+<!--[XPathNotImplementedError]-->exception <tt class="descname">XPathNotImplementedError</tt><a class="headerlink" href="#XPathNotImplementedError" title="Permalink to this definition">¶</a></dt>
+<dd>Raised when an XPath expression contains a feature of XPath which
+has not been implemented.</dd></dl>
+
+<dl class="exception">
+<dt id="XPathParseError">
+<!--[XPathParseError]-->exception <tt class="descname">XPathParseError</tt><a class="headerlink" href="#XPathParseError" title="Permalink to this definition">¶</a></dt>
+<dd>Raised when an XPath expression could not be parsed.</dd></dl>
+
+<dl class="exception">
+<dt id="XPathTypeError">
+<!--[XPathTypeError]-->exception <tt class="descname">XPathTypeError</tt><a class="headerlink" href="#XPathTypeError" title="Permalink to this definition">¶</a></dt>
+<dd>Raised when an XPath expression is found to contain a type error.
+For example, the expression &#8220;string()/node()&#8221; contains a type error
+because the &#8220;string()&#8221; function does not return a node-set.</dd></dl>
+
+<dl class="exception">
+<dt id="XPathUnknownFunctionError">
+<!--[XPathUnknownFunctionError]-->exception <tt class="descname">XPathUnknownFunctionError</tt><a class="headerlink" href="#XPathUnknownFunctionError" title="Permalink to this definition">¶</a></dt>
+<dd>Raised when an XPath expression contains a function that has no
+binding in the expression context.</dd></dl>
+
+<dl class="exception">
+<dt id="XPathUnknownPrefixError">
+<!--[XPathUnknownPrefixError]-->exception <tt class="descname">XPathUnknownPrefixError</tt><a class="headerlink" href="#XPathUnknownPrefixError" title="Permalink to this definition">¶</a></dt>
+<dd>Raised when an XPath expression contains a QName with a namespace
+prefix that has no corresponding namespace declaration in the expression
+context.</dd></dl>
+
+<dl class="exception">
+<dt id="XPathUnknownVariableError">
+<!--[XPathUnknownVariableError]-->exception <tt class="descname">XPathUnknownVariableError</tt><a class="headerlink" href="#XPathUnknownVariableError" title="Permalink to this definition">¶</a></dt>
+<dd>Raised when an XPath expression contains a variable that has no
+binding in the expression context.</dd></dl>
+
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference external" href="http://www.w3.org/TR/xpath">XML Path Language (XPath) Version 1.0</a></dt>
+<dd>The W3C recommendation upon which this module is based.</dd>
+<dt><a class="reference external" href="http://www.w3.org/TR/xpath20/">XML Path Language (XPath) 2.0</a></dt>
+<dd>Second version of XPath, mostly unsupported by this module.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href=""><tt class="docutils literal"><span class="pre">xpath</span></tt> &#8212; XPath Queries For DOM Trees</a><ul>
+<li><a class="reference external" href="#basic-queries">Basic Queries</a></li>
+<li><a class="reference external" href="#namespaces">Namespaces</a></li>
+<li><a class="reference external" href="#variables">Variables</a></li>
+<li><a class="reference external" href="#compiled-expression-objects">Compiled Expression Objects</a></li>
+<li><a class="reference external" href="#expression-context-objects">Expression Context Objects</a></li>
+<li><a class="reference external" href="#exceptions">Exceptions</a></li>
+<li><a class="reference external" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+          <h3>Quick search</h3>
+            <form class="search" action="search.html" method="get">
+              <input type="text" name="q" size="18" /> <input type="submit" value="Go" />
+              <input type="hidden" name="check_keywords" value="yes" />
+              <input type="hidden" name="area" value="default" />
+            </form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="">XPath v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, Nominum, Inc..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.5.1.
+    </div>
+  </body>
+</html>
