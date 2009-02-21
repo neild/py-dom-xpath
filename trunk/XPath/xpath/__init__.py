@@ -75,13 +75,13 @@ class XPathContext(object):
     def find(self, expr, node, **kwargs):
         return xpath.find(expr, node, context=self, **kwargs)
 
-    def findnode(self, expr, node):
+    def findnode(self, expr, node, **kwargs):
         return xpath.findnode(expr, node, context=self, **kwargs)
 
-    def findvalue(self, expr, node):
+    def findvalue(self, expr, node, **kwargs):
         return xpath.findvalue(expr, node, context=self, **kwargs)
 
-    def findvalues(self, expr, node):
+    def findvalues(self, expr, node, **kwargs):
         return xpath.findvalues(expr, node, context=self, **kwargs)
 
 class XPath():
@@ -223,7 +223,6 @@ if __name__ == '__main__':
     else:
         dom = xml.dom.minidom.parse(sys.argv[2])
         try:
-            expr = XPath(sys.argv[1])
             result = find(sys.argv[1], dom)
             if isinstance(result, list):
                 for node in result:
