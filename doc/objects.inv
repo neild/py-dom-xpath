@@ -1,0 +1,26 @@
+# Sphinx inventory version 1
+# Project: XPath
+# Version: 0.1
+XPath class index.html
+XPathNotImplementedError exception index.html
+findvalue function index.html
+XPath.findvalues method index.html
+find function index.html
+XPathContext.default_namespace attribute index.html
+XPathUnknownFunctionError exception index.html
+XPathContext.variables attribute index.html
+XPathContext class index.html
+XPathContext.find method index.html
+findvalues function index.html
+XPath.findvalue method index.html
+XPathUnknownVariableError exception index.html
+XPath.find method index.html
+findnode function index.html
+XPathParseError exception index.html
+XPathContext.findnode method index.html
+XPathContext.namespaces attribute index.html
+XPathError exception index.html
+XPathTypeError exception index.html
+XPathUnknownPrefixError exception index.html
+XPathContext.findvalue method index.html
+XPath.findnode method index.html
