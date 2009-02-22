@@ -11,6 +11,17 @@ class XPathNotImplementedError(XPathError):
 class XPathParseError(XPathError):
     """Raised when an XPath expression could not be parsed."""
 
+    def __init__(self, expr, pos, message):
+        XPathError.__init__(self)
+        self.expr = expr
+        self.pos = pos
+        self.message = message
+
+    def __str__(self):
+        return ("Syntax error:\n" +
+                self.expr.replace("\n", " ") + "\n" +
+                ("-" * self.pos) + "^")
+
 class XPathTypeError(XPathError):
     """Raised when an XPath expression is found to contain a type error.
     For example, the expression "string()/node()" contains a type error

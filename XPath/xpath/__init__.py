@@ -2,6 +2,7 @@ from xpath.exceptions import *
 import xpath.exceptions
 import xpath.expr
 import xpath.parser
+import xpath.yappsrt
 
 __all__ = ['find', 'findnode', 'findvalue', 'XPathContext', 'XPath']
 __all__.extend((x for x in dir(xpath.exceptions) if not x.startswith('_')))
@@ -83,9 +84,11 @@ class XPath():
     def __init__(self, expr):
         """Init docs.
         """
-        self.expr = xpath.parser.parse('XPath', expr)
-        if self.expr is None:
-            raise XPathParseError()
+        try:
+            parser = xpath.parser.XPath(xpath.parser.XPathScanner(str(expr)))
+            self.expr = parser.XPath()
+        except xpath.yappsrt.SyntaxError, e:
+            raise XPathParseError(str(expr), e.pos, e.msg)
 
     @classmethod
     def get(cls, s):
