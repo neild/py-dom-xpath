@@ -234,6 +234,7 @@ Expression Context Objects
    .. method:: find(expr, node, [\**kwargs])
                findnode(expr, node, [\**kwargs])
                findvalue(expr, node, [\**kwargs])
+               findvalues(expr, node, [\**kwargs])
 
       Evaluate *expr* in the context with *node* as the context node.
       *expr* may be either a string or a :class:`XPath` object.
