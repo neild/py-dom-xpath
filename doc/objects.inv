@@ -5,6 +5,7 @@ XPath class index.html
 XPathNotImplementedError exception index.html
 findvalue function index.html
 XPath.findvalues method index.html
+XPathContext.findvalues method index.html
 find function index.html
 XPathContext.default_namespace attribute index.html
 XPathUnknownFunctionError exception index.html
