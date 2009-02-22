@@ -156,14 +156,6 @@ class Expr(object):
         Returns an XPath value: a nodeset, string, boolean, or number.
 
         """
-        pass
-
-    def __str__(self):
-        """The string representation of an expression object is the actual
-        XPath expression encoded by that object.
-
-        """
-        return repr(self)
 
 class BinaryOperatorExpr(Expr):
     """Base class for all binary operators."""
@@ -677,7 +669,7 @@ def make_axes():
         return chain([node], ancestor(node))
 
     # Place each axis function defined here into the 'axes' dict.
-    for axis in locals().itervalues():
+    for axis in locals().values():
         axes[axis.__name__] = axis
 
 make_axes()
