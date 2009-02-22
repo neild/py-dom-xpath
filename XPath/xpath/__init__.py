@@ -157,27 +157,3 @@ def findvalue(expr, node, **kwargs):
 @api
 def findvalues(expr, node, **kwargs):
     return XPath.get(expr).findvalues(node, **kwargs)
-
-if __name__ == '__main__':
-    import sys
-    import xml.dom.minidom
-
-    if len(sys.argv) != 3:
-        print "Usage: python -m xpath <expression> <file>"
-    else:
-        dom = xml.dom.minidom.parse(sys.argv[2])
-        try:
-            result = find(sys.argv[1], dom)
-            if isinstance(result, list):
-                for node in result:
-                    if node.nodeType == node.ATTRIBUTE_NODE:
-                        print '%s=%s' % (node.name, node.value)
-                    else:
-                        print node.toxml()
-            else:
-                print result
-        except XPathError, e:
-            print "error"
-            print e.__class__
-            print e
-            print e.message
