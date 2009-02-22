@@ -67,6 +67,10 @@ class TestNodeSetFunctions(unittest.TestCase):
             'number(//.[@id=7]/attribute::*[local-name()="value"])', self.doc)
         self.failUnlessEqual(result, 42)
 
+    def test_local_name_empty(self):
+        result = xpath.find('local-name(/absent)', self.doc)
+        self.failUnlessEqual(result, '')
+
     def test_namespace_uri(self):
         result = xpath.find('namespace-uri(//.[@id>5])', self.doc)
         self.failUnlessEqual(result, 'http://www.example.com/a')
@@ -77,6 +81,10 @@ class TestNodeSetFunctions(unittest.TestCase):
         self.failUnlessEqual([x.getAttribute("id") for x in result],
                              ["7"])
 
+    def test_namespace_uri_empty(self):
+        result = xpath.find('namespace-uri(/absent)', self.doc)
+        self.failUnlessEqual(result, '')
+
     def test_name(self):
         result = xpath.find('name(//.[@id=7])', self.doc)
         self.failUnlessEqual(result, 'b:item')
@@ -85,6 +93,10 @@ class TestNodeSetFunctions(unittest.TestCase):
         result = xpath.find('//.[name()="b:item"]', self.doc)
         self.failUnlessEqual([x.getAttribute("id") for x in result],
                              ["7"])
+
+    def test_name_empty(self):
+        result = xpath.find('name(/absent)', self.doc)
+        self.failUnlessEqual(result, '')
 
 class TestStringFunctions(unittest.TestCase):
     """Section 4.2: String Functions"""
@@ -106,6 +118,10 @@ class TestStringFunctions(unittest.TestCase):
     def test_string_nodeset(self):
         result = xpath.find('string(//para)', self.doc)
         self.failUnlessEqual(result, 'One')
+
+    def test_string_empty_nodeset(self):
+        result = xpath.find('string(//inconceivable)', self.doc)
+        self.failUnlessEqual(result, '')
 
     def test_string_number_nan(self):
         result = xpath.find('string(0 div 0)', self.doc)
@@ -210,6 +226,14 @@ class TestStringFunctions(unittest.TestCase):
 
     def test_string_substring_inf_to_inf(self):
         result = xpath.find('substring("12345", -1 div 0, 1 div 0)', self.doc)
+        self.failUnlessEqual(result, '')
+
+    def test_string_substring_start_after_end(self):
+        result = xpath.find('substring("12345", 6, 1)', self.doc)
+        self.failUnlessEqual(result, '')
+
+    def test_string_substring_zero_length(self):
+        result = xpath.find('substring("12345", 1, 0)', self.doc)
         self.failUnlessEqual(result, '')
 
     def test_string_length(self):

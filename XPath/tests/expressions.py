@@ -19,24 +19,25 @@ class TestVariables(unittest.TestCase):
 
     def setUp(self):
         self.doc = xml.dom.minidom.parseString(self.xml)
+        self.context = xpath.XPathContext()
+        self.context.variables['start'] = 2
+        self.context.variables['end'] = '4'
+        self.context.variables[('http://anaconda.python.org', 'start')] = 3
+        self.context.namespaces['ana'] = 'http://anaconda.python.org'
 
     def test_persistant_variables(self):
-        context = xpath.XPathContext()
-        context.variables['start'] = 2
-        context.variables['end'] = '4'
-        result = context.find('//item[@id >= $start and @id <= $end]', self.doc)
+        result = self.context.find('//item[@id >= $start and @id <= $end]',
+                                   self.doc)
         self.failUnlessEqual([x.getAttribute("id") for x in result],
                              ["2", "3", "4"])
 
     def test_temporary_variables(self):
-        context = xpath.XPathContext()
-        context.variables['start'] = 2
-        context.variables['end'] = '4'
-        result = context.find('//item[@id >= $start and @id <= $end]',
-                              self.doc, end=3)
+        result = self.context.find('//item[@id >= $start and @id <= $end]',
+                                   self.doc, end=3)
         self.failUnlessEqual([x.getAttribute("id") for x in result],
                              ["2", "3"])
-        result = context.find('//item[@id >= $start and @id <= $end]', self.doc)
+        result = self.context.find('//item[@id >= $start and @id <= $end]',
+                                   self.doc)
         self.failUnlessEqual([x.getAttribute("id") for x in result],
                              ["2", "3", "4"])
 
@@ -51,6 +52,24 @@ class TestVariables(unittest.TestCase):
                               xpath.find,
                               '//item[@id >= $start and @id <= $end]',
                               self.doc, start=1)
+
+    def test_variable_namespace(self):
+        result = self.context.find('//item[@id >= $ana:start and @id <= $end]',
+                                   self.doc)
+        self.failUnlessEqual([x.getAttribute("id") for x in result],
+                             ["3", "4"])
+
+    def test_variable_unknown_namespace(self):
+        self.failUnlessRaises(xpath.XPathUnknownPrefixError,
+                              self.context.find,
+                              '//item[@id >= $a:start and @id <= $end]',
+                              self.doc)
+
+    def test_unknown_namespace_variable(self):
+        self.failUnlessRaises(xpath.XPathUnknownVariableError,
+                              self.context.find,
+                              '//item[@id >= $ana:foo and @id <= $end]',
+                              self.doc)
 
 class TestFunctionCalls(unittest.TestCase):
     """Section 3.2: Function Calls"""
@@ -78,6 +97,10 @@ class TestFunctionCalls(unittest.TestCase):
         self.failUnlessRaises(xpath.XPathTypeError,
                               xpath.find, 'count(100)', self.doc)
 
+    def test_unknown_function(self):
+        self.failUnlessRaises(xpath.XPathUnknownFunctionError,
+                              xpath.find, 'adumbrate()', self.doc)
+
 class TestNodeSets(unittest.TestCase):
     """Section 3.3: Node-sets"""
 
@@ -104,16 +127,29 @@ class TestNodeSets(unittest.TestCase):
         self.failUnlessEqual([x.getAttribute("id") for x in result],
                              ["2", "3", "4", "6", "8", "9"])
 
+    def test_union_type_error(self):
+        self.failUnlessRaises(xpath.XPathTypeError,
+                              xpath.find, '//item | 42', self.doc)
+
     def test_expression_path_element(self):
         result = xpath.find('/doc/(item[@id = 2] | item[@id = 6])/@id',
                             self.doc)
         self.failUnlessEqual([x.value for x in result],
                              ["2", "6"])
 
+    def test_invalid_path_start(self):
+        self.failUnlessRaises(xpath.XPathTypeError,
+                              xpath.find, '"monty"/anaconda',
+                              self.doc)
+
     def test_invalid_path_element(self):
         self.failUnlessRaises(xpath.XPathTypeError,
                               xpath.find, '/doc/string(item[@id = 2])/@id',
                               self.doc)
+
+    def test_invalid_filter_expression(self):
+        self.failUnlessRaises(xpath.XPathTypeError,
+                              xpath.find, '(1)[1]', self.doc)
 
 class TestBooleans(unittest.TestCase):
     """Section 3.4: Booleans"""
