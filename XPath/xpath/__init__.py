@@ -1,15 +1,3 @@
-"""XPath Queries For DOM Trees
-
-The :mod:`xpath` module is a pure Python implementation of XPath 1.0,
-operating on DOM documents.
-
-.. seealso::
-
-   `XML Path Language (XPath) Version 1.0 <http://www.w3.org/TR/xpath>`_
-      The W3C recommendation upon which the :mod:`xpath` API is based.
-
-"""
-
 from xpath.exceptions import *
 import xpath.exceptions
 import xpath.expr
@@ -72,26 +60,23 @@ class XPathContext(object):
             self.variables = variables
         self.variables.update(kwargs)
 
+    @api
     def find(self, expr, node, **kwargs):
         return xpath.find(expr, node, context=self, **kwargs)
 
+    @api
     def findnode(self, expr, node, **kwargs):
         return xpath.findnode(expr, node, context=self, **kwargs)
 
+    @api
     def findvalue(self, expr, node, **kwargs):
         return xpath.findvalue(expr, node, context=self, **kwargs)
 
+    @api
     def findvalues(self, expr, node, **kwargs):
         return xpath.findvalues(expr, node, context=self, **kwargs)
 
 class XPath():
-    """
-    
-    The :func:`find`, :func:`findnode`, and :func:`findvalue` functions
-    cache the results of compiling an expression.
-
-    """
-
     _max_cache = 100
     _cache = {}
 
@@ -115,11 +100,8 @@ class XPath():
             cls._cache[s] = expr
             return expr
 
+    @api
     def find(self, node, context=None, **kwargs):
-        """Evaluate the expression in the context of the given node.
-
-        Returns an XPath value: a nodeset, string, boolean, or number.
-        """
         if context is None:
             context = XPathContext(node, **kwargs)
         elif kwargs:
@@ -127,6 +109,7 @@ class XPath():
             context.update(**kwargs)
         return self.expr.evaluate(node, 1, 1, context)
 
+    @api
     def findnode(self, node, context=None, **kwargs):
         result = self.find(node, context, **kwargs)
         if not xpath.expr.nodesetp(result):
@@ -135,12 +118,8 @@ class XPath():
             return None
         return result[0]
 
+    @api
     def findvalue(self, node, context=None, **kwargs):
-        """Evaluate the expression in the context of the given node.
-
-        If the result is a nodeset, it is coverted to a string (as if
-        passed to the string() function).
-        """
         result = self.find(node, context, **kwargs)
         if xpath.expr.nodesetp(result):
             if len(result) == 0:
@@ -148,12 +127,8 @@ class XPath():
             result = xpath.expr.string(result)
         return result
 
+    @api
     def findvalues(self, node, context=None, **kwargs):
-        """Evaluate the expression in the context of the given node.
-
-        If the result is a nodeset, it is coverted to a string (as if
-        passed to the string() function).
-        """
         result = self.find(node, context, **kwargs)
         if not xpath.expr.nodesetp(result):
             raise XPathTypeError("expression is not a node-set")
@@ -167,47 +142,16 @@ class XPath():
     def __str__(self):
         return str(self.expr)
 
-
 @api
 def find(expr, node, **kwargs):
-    """Evaluate the XPath expression *expr* with *node* as the context node,
-    and return the result.
-
-    XPath expressions evaluate one of four basic types:
-
-    * node-set, a list of :class:`xml.dom.Node`.
-    * boolean, a :class:`bool`.
-    * number, a :class:`float`.
-    * string, a :class:`unicode`.
-
-    """
     return XPath.get(expr).find(node, **kwargs)
 
 @api
 def findnode(expr, node, **kwargs):
-    """Evaluate the XPath expression *expr* with *node* as the context node,
-    and return a single :class:`xml.dom.Node`.
-
-    If the result of evaluating *expr* is a node-set containing at least
-    one node, the first node in the node-set is returned.
-
-    If the result is an empty node-set, returns ``None``.
-
-    If the result is not a node-set, raises :exc:`xpath.XPathTypeError`.
-
-    """
     return XPath.get(expr).findnode(node, **kwargs)
 
 @api
 def findvalue(expr, node, **kwargs):
-    """Evaluate the XPath expression *expr* with *node* as the context node,
-    and return the result as cast to string.
-
-    If the result of evaluating *expr* is an empty node-set, returns ``None``.
-
-    Otherwise, returns the string-value of *expr*.
-
-    """
     return XPath.get(expr).findvalue(node, **kwargs)
 
 @api
