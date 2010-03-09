@@ -101,10 +101,10 @@ def string(v):
             return u'Infinity'
         elif v == float('-inf'):
             return u'-Infinity'
-        elif int(v) == v and v <= 0xffffffff:
-            v = int(v)
         elif str(v) == 'nan':
             return u'NaN'
+        elif int(v) == v and v <= 0xffffffff:
+            v = int(v)
         return unicode(v)
     elif booleanp(v):
         return u'true' if v else u'false'
