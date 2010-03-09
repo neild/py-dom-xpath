@@ -15,7 +15,7 @@ class XPathParseError(XPathError):
         XPathError.__init__(self)
         self.expr = expr
         self.pos = pos
-        self.message = message
+        self.err = message
 
     def __str__(self):
         return ("Syntax error:\n" +
