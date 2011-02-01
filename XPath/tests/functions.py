@@ -109,6 +109,7 @@ class TestStringFunctions(unittest.TestCase):
     <para id="4">
         Four
     </para>
+    <data>foo<![CDATA[one<two>three]]>bar</data>
 </doc>
 """
 
@@ -154,6 +155,14 @@ class TestStringFunctions(unittest.TestCase):
     def test_string_string(self):
         result = xpath.find('string("string")', self.doc)
         self.failUnlessEqual(result, 'string')
+
+    def test_string_cdata_child(self):
+        result = xpath.find('string(//data)', self.doc)
+        self.failUnlessEqual(result, "fooone<two>threebar")
+
+    def test_string_cdata(self):
+        result = xpath.find('string(//data/text()[2])', self.doc)
+        self.failUnlessEqual(result, "one<two>three")
 
     def test_string_implicit(self):
         result = xpath.find('//para[string()="Two"]', self.doc)
