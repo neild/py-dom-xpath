@@ -219,20 +219,20 @@ parser XPath:
         | AnyKindTest                   {{ return AnyKindTest }}
 
     rule PITest:
-          r'processing-instruction'     {{ name = None }}
-          r'\(' [
+          r'processing-instruction\s*\(' {{ name = None }}
+          [
               NCNAME                    {{ name = NCNAME }}
             | StringLiteral             {{ name = StringLiteral }}
           ] r'\)'                       {{ return X.PITest(name) }}
 
     rule CommentTest:
-          r'comment' r'\(' r'\)'        {{ return X.CommentTest() }}
+          r'comment\s*\(' r'\)'         {{ return X.CommentTest() }}
 
     rule TextTest:
-          r'text' r'\(' r'\)'           {{ return X.TextTest() }}
+          r'text\s*\(' r'\)'            {{ return X.TextTest() }}
 
     rule AnyKindTest:
-          r'node' r'\(' r'\)'           {{ return X.AnyKindTest() }}
+          r'node\s*\(' r'\)'            {{ return X.AnyKindTest() }}
 
     rule Literal:
           NumericLiteral                {{ return NumericLiteral }}

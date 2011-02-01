@@ -404,5 +404,41 @@ class PathsTestCase(unittest.TestCase):
         self.failUnlessEqual([x.getAttribute("id") for x in result],
                              ["4"])
 
+    def test_text_element(self):
+        doc = xml.dom.minidom.parseString("""
+            <doc>
+                <text id="1">text</text>
+            </doc>
+        """)
+        result = xpath.find("//text", doc)
+        self.failUnlessEqual([x.getAttribute("id") for x in result], ["1"])
+
+    def test_node_element(self):
+        doc = xml.dom.minidom.parseString("""
+            <doc>
+                <node id="1">text</node>
+            </doc>
+        """)
+        result = xpath.find("//node", doc)
+        self.failUnlessEqual([x.getAttribute("id") for x in result], ["1"])
+
+    def test_comment_element(self):
+        doc = xml.dom.minidom.parseString("""
+            <doc>
+                <comment id="1">text</comment>
+            </doc>
+        """)
+        result = xpath.find("//comment", doc)
+        self.failUnlessEqual([x.getAttribute("id") for x in result], ["1"])
+
+    def test_pi_element(self):
+        doc = xml.dom.minidom.parseString("""
+            <doc>
+                <processing-instruction id="1">text</processing-instruction>
+            </doc>
+        """)
+        result = xpath.find("//processing-instruction", doc)
+        self.failUnlessEqual([x.getAttribute("id") for x in result], ["1"])
+
 if __name__ == '__main__':
     unittest.main()
