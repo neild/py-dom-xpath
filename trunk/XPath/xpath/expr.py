@@ -22,6 +22,8 @@ def string_value(node):
         for n in axes['descendant'](node):
             if n.nodeType == n.TEXT_NODE:
                 s += n.data
+            elif n.nodeType == n.CDATA_SECTION_NODE:
+                s += n.nodeValue
         return s
 
     elif node.nodeType == node.ATTRIBUTE_NODE:
@@ -31,6 +33,9 @@ def string_value(node):
           node.nodeType == node.COMMENT_NODE or
           node.nodeType == node.TEXT_NODE):
         return node.data
+
+    elif node.nodeType == node.CDATA_SECTION_NODE:
+        return node.nodeValue
 
 def document_order(node):
     """Compute a document order value for the node.
@@ -884,7 +889,8 @@ class CommentTest(object):
 
 class TextTest(object):
     def match(self, node, axis, context):
-        return node.nodeType == node.TEXT_NODE
+        return (node.nodeType == node.TEXT_NODE or
+                node.nodeType == node.CDATA_SECTION_NODE)
 
     def __str__(self):
         return 'text()'
