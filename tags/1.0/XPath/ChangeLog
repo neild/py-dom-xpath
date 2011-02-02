@@ -1,0 +1,7 @@
+1.0
+	* "string(0 div 0)" now works on Python 2.6+.
+	* Fixed a Python 2.6+ deprecation warning caused by using
+	  BaseException.message.
+	* Correctly handle CDATA sections.
+	* Allow paths which contain element names that conflict with kind test
+	  names (e.g., "//text").

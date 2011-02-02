@@ -1,0 +1,17 @@
+py-dom-xpath is a pure Python implementation of XPath 1.0. It
+supports almost all XPath 1.0, with the main exception being the
+namespace axis. It operates on DOM 2.0 nodes, and works well with
+xml.dom.minidom.
+
+py-dom-xpath requires Python 2.5 or greater.
+
+py-dom-xpath uses the Yapps 2 parser generator by Amit J. Patel.
+Portions of of Yapps 2 are included in this distribution, to avoid
+introducing external dependencies.
+
+py-dom-xpath was developed at Nominum. Nominum has graciously
+permitted the author to release it under the MIT license.
+
+For further details, visit the project home page at:
+
+    http://code.google.com/p/py-dom-xpath/
