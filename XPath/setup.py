@@ -3,10 +3,8 @@ import os
 import string
 import sys
 
-from ez_setup import use_setuptools
-use_setuptools()
+from setuptools import setup, find_packages
 
-from setuptools import setup
 from setuptools.command.build_py import build_py as _build_py
 from setuptools.command.test import test as _test
 
@@ -50,7 +48,7 @@ class build_py(_build_py):
         return modules
 
 setup(name="py-dom-xpath-redux",
-      version="0.1",
+      version="0.1.1",
       description="XPath for DOM trees",
       long_description="""\
 py-dom-xpath is a pure Python implementation of XPath 1.0. It
@@ -62,7 +60,7 @@ py-dom-xpath requires Python 2.5 or greater.""",
       author='Andrew Cutler',
       author_email='macropin@gmail.com',
       url='https://github.com/macropin/py-dom-xpath-redux',
-      packages=['xpath'],
+      packages=['xpath', 'yapps2'],
       cmdclass={
           'build_py':build_py,
           'test':test,
