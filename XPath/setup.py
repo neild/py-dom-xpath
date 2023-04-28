@@ -3,10 +3,8 @@ import os
 import string
 import sys
 
-from ez_setup import use_setuptools
-use_setuptools()
+from setuptools import setup, find_packages
 
-from setuptools import setup
 from setuptools.command.build_py import build_py as _build_py
 from setuptools.command.test import test as _test
 
@@ -49,8 +47,8 @@ class build_py(_build_py):
 
         return modules
 
-setup(name="py-dom-xpath",
-      version="0.1",
+setup(name="py-dom-xpath-redux",
+      version="0.1.1",
       description="XPath for DOM trees",
       long_description="""\
 py-dom-xpath is a pure Python implementation of XPath 1.0. It
@@ -59,11 +57,10 @@ namespace axis. It operates on DOM 2.0 nodes, and works well with
 xml.dom.minidom.
 
 py-dom-xpath requires Python 2.5 or greater.""",
-      author='Damien Neil',
-      author_email='damien.neil@gmail.com',
-      url='http://code.google.com/p/py-dom-xpath/',
-      download_url='http://py-dom-xpath.googlecode.com/files/py-dom-xpath-0.1.tar.gz',
-      packages=['xpath'],
+      author='Andrew Cutler',
+      author_email='macropin@gmail.com',
+      url='https://github.com/macropin/py-dom-xpath-redux',
+      packages=['xpath', 'yapps2'],
       cmdclass={
           'build_py':build_py,
           'test':test,
